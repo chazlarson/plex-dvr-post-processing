@@ -3,6 +3,7 @@ require 'logger'
 require 'tmpdir'
 require 'shellwords'
 
+PLEX_MEDIA_SCAN_PATH = "/Applications/Plex\ Media\ Server.app/Contents/MacOS/Plex\ Media\ Scanner"
 PLEX_COMSKIP_PATH = "/Users/john/development/PlexComskip/PlexComskip.py"
 HANDBRAKE_PRESET = "Apple 720p30 Surround"
 HANDBRAKE_OUTPUT_EXTENSION = "m4v"
@@ -11,6 +12,7 @@ TEST_MODE = false
 input = ARGV[0]
 input = File.expand_path(input)
 input_basename = File.basename(input)
+input_dirname = File.dirname(input)
 
 LOG_ROOT = File.join(File.dirname(__FILE__), 'logs')
 FileUtils.mkdir_p LOG_ROOT
@@ -47,7 +49,7 @@ transcode_command += " --stop-at duration:60" if TEST_MODE
 subout transcode_command, 'TRANSCODE'
 
 LOG.info "Copying processed file to source directory"
-output = File.join(File.dirname(input), File.basename(transcoded_tmp_path))
+output = File.join(input_dirname, File.basename(transcoded_tmp_path))
 LOG.info "Copying \"#{transcoded_tmp_path}\" to \"#{output}\""
 copy_command = "cp #{Shellwords::shellescape transcoded_tmp_path} #{Shellwords::shellescape output}"
 subout copy_command, 'COPY'
@@ -61,5 +63,9 @@ else
   LOG.info "Deleting original \"#{input}\""
   File.delete(input)
 end
+
+LOG.info "Telling Plex to rescan \"#{input_dirname}\""
+plex_media_scan_command = "#{PLEX_MEDIA_SCAN_PATH} --directory #{Shellwords::shellescape input_dirname}"
+subout plex_media_scan_command, 'PLEX MEDIA SCAN'
 
 LOG.info "Done!"
