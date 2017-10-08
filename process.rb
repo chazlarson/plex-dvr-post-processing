@@ -8,13 +8,16 @@ HANDBRAKE_PRESET = "Apple 720p30 Surround"
 HANDBRAKE_OUTPUT_EXTENSION = "m4v"
 TEST_MODE = false
 
-LOG_PATH = File.join(File.dirname(__FILE__), 'process.log')
+input = ARGV[0]
+input = File.expand_path(input)
+input_basename = File.basename(input)
+
+LOG_ROOT = File.join(File.dirname(__FILE__), 'logs')
+FileUtils.mkdir_p LOG_ROOT
+LOG_PATH = File.join(LOG_ROOT, "#{input_basename}.log")
 LOG = Logger.new(LOG_PATH)
 
 LOG.warn "TEST MODE IS ON" if TEST_MODE
-
-input = ARGV[0]
-input = File.expand_path(input)
 
 def subout(command, tag = false)
   LOG.info command
@@ -28,7 +31,7 @@ LOG.info "Processing \"#{input}\""
 tmp_dir = Dir.mktmpdir
 LOG.info "Created Temporary Working Directory \"#{tmp_dir}\""
 
-input_tmp_path = File.join(tmp_dir, File.basename(input))
+input_tmp_path = File.join(tmp_dir, input_basename)
 LOG.info "Copying \"#{input}\" to #{input_tmp_path}"
 copy_command = "cp #{Shellwords::shellescape input} #{Shellwords::shellescape input_tmp_path}"
 subout copy_command, 'COPY'
