@@ -54,4 +54,12 @@ subout copy_command, 'COPY'
 
 LOG.info "Deleting Temporary Working Directory \"#{tmp_dir}\""
 FileUtils.rm_rf tmp_dir
+
+if TEST_MODE
+  LOG.info "Skipping original deletion because of TEST_MODE"
+else
+  LOG.info "Deleting original \"#{input}\""
+  File.delete(input)
+end
+
 LOG.info "Done!"
