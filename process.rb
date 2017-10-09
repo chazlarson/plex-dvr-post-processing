@@ -21,6 +21,9 @@ LOG = Logger.new(LOG_PATH)
 
 LOG.warn "TEST MODE IS ON" if TEST_MODE
 
+LOG.debug "ARGV:\n\t#{ARGV.join("\n\t")}"
+LOG.debug "ENV:\n#{ENV.collect{|k,v| "\t#{k}: #{v}"}.join("\n")}"
+
 def subout(command, tag = false)
   LOG.info command
   IO.popen("#{command} 2>&1").each do |line|
@@ -54,18 +57,11 @@ LOG.info "Copying \"#{transcoded_tmp_path}\" to \"#{output}\""
 copy_command = "cp #{Shellwords::shellescape transcoded_tmp_path} #{Shellwords::shellescape output}"
 subout copy_command, 'COPY'
 
+LOG.info "Moving the processed file over the original"
+move_command = "mv #{Shellwords::shellescape output} #{Shellwords::shellescape input}"
+subout move_command, 'MOVE'
+
 LOG.info "Deleting Temporary Working Directory \"#{tmp_dir}\""
 FileUtils.rm_rf tmp_dir
-
-if TEST_MODE
-  LOG.info "Skipping original deletion because of TEST_MODE"
-else
-  LOG.info "Deleting original \"#{input}\""
-  File.delete(input)
-end
-
-LOG.info "Telling Plex to rescan \"#{input_dirname}\""
-plex_media_scan_command = "#{PLEX_MEDIA_SCAN_PATH} --directory #{Shellwords::shellescape input_dirname}"
-subout plex_media_scan_command, 'PLEX MEDIA SCAN'
 
 LOG.info "Done!"
