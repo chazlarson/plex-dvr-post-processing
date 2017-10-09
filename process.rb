@@ -70,7 +70,7 @@ LOG.info "Deleting Temporary Working Directory \"#{tmp_dir}\""
 FileUtils.rm_rf tmp_dir
 
 # Detect if the script was run as a Plex POSTPROCESSING script or manually. If run manually, notify the Plex Media Server of the change.
-unless ENV['XPC_SERVICE_NAME'].include?('plex')
+unless (ENV['XPC_SERVICE_NAME'] || '').include?('plex')
   LOG.info "Telling Plex to rescan \"#{input_dirname}\""
   plex_media_scan_command = "#{PLEX_MEDIA_SCAN_PATH} --directory #{Shellwords::shellescape input_dirname}"
   subout plex_media_scan_command, 'PLEX MEDIA SCAN'
