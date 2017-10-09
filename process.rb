@@ -57,11 +57,11 @@ LOG.info "Copying \"#{transcoded_tmp_path}\" to \"#{output}\""
 copy_command = "cp #{Shellwords::shellescape transcoded_tmp_path} #{Shellwords::shellescape output}"
 subout copy_command, 'COPY'
 
+LOG.info "Moving the processed file over the original"
+move_command = "mv #{Shellwords::shellescape output} #{Shellwords::shellescape input}"
 if TEST_MODE
-  LOG.info "Skipping the \"Moving the processed file over the original\" step because TEST_MODE"
+  LOG.info "Skipping the move command because of TEST_MODE. Would have been:\n#{move_command}"
 else
-  LOG.info "Moving the processed file over the original"
-  move_command = "mv #{Shellwords::shellescape output} #{Shellwords::shellescape input}"
   subout move_command, 'MOVE'
 end
 
