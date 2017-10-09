@@ -5,6 +5,7 @@ require 'shellwords'
 
 PLEX_MEDIA_SCAN_PATH = "/Applications/Plex\ Media\ Server.app/Contents/MacOS/Plex\ Media\ Scanner"
 PLEX_COMSKIP_PATH = "/Users/john/development/PlexComskip/PlexComskip.py"
+HANDBRAKE_BIN = "/usr/local/bin/HandBrakeCLI"
 HANDBRAKE_PRESET = "Apple 720p30 Surround"
 HANDBRAKE_OUTPUT_EXTENSION = "m4v"
 TEST_MODE = false
@@ -47,7 +48,7 @@ subout comskip_command, 'COMSKIP'
 
 LOG.info "Transcoding"
 transcoded_tmp_path = "#{input_tmp_path}.#{HANDBRAKE_PRESET}.#{HANDBRAKE_OUTPUT_EXTENSION}"
-transcode_command = "HandBrakeCLI --preset \"#{HANDBRAKE_PRESET}\" -i #{Shellwords::shellescape input_tmp_path} -o #{Shellwords::shellescape transcoded_tmp_path}"
+transcode_command = "#{HANDBRAKE_BIN} --preset \"#{HANDBRAKE_PRESET}\" -i #{Shellwords::shellescape input_tmp_path} -o #{Shellwords::shellescape transcoded_tmp_path}"
 transcode_command += " --stop-at duration:60" if TEST_MODE
 subout transcode_command, 'TRANSCODE'
 
