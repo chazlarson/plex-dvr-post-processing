@@ -57,9 +57,13 @@ LOG.info "Copying \"#{transcoded_tmp_path}\" to \"#{output}\""
 copy_command = "cp #{Shellwords::shellescape transcoded_tmp_path} #{Shellwords::shellescape output}"
 subout copy_command, 'COPY'
 
-LOG.info "Moving the processed file over the original"
-move_command = "mv #{Shellwords::shellescape output} #{Shellwords::shellescape input}"
-subout move_command, 'MOVE'
+if TEST_MODE
+  LOG.info "Skipping the \"Moving the processed file over the original\" step because TEST_MODE"
+else
+  LOG.info "Moving the processed file over the original"
+  move_command = "mv #{Shellwords::shellescape output} #{Shellwords::shellescape input}"
+  subout move_command, 'MOVE'
+end
 
 LOG.info "Deleting Temporary Working Directory \"#{tmp_dir}\""
 FileUtils.rm_rf tmp_dir
