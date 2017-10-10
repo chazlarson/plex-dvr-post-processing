@@ -10,6 +10,8 @@ HANDBRAKE_PRESET = "Apple 720p30 Surround"
 HANDBRAKE_OUTPUT_EXTENSION = "m4v"
 TEST_MODE = false
 
+Process.setpriority(Process::PRIO_PROCESS, 0, 20)
+
 input = ARGV[0]
 input = File.expand_path(input)
 input_basename = File.basename(input)
