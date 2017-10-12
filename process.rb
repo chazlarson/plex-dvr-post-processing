@@ -2,7 +2,6 @@
 require 'logger'
 require 'tmpdir'
 require 'shellwords'
-require './locker.rb'
 
 PLEX_MEDIA_SCAN_PATH = "/Applications/Plex\ Media\ Server.app/Contents/MacOS/Plex\ Media\ Scanner"
 PLEX_COMSKIP_PATH = "/Users/john/development/PlexComskip/PlexComskip.py"
@@ -10,6 +9,7 @@ HANDBRAKE_BIN = "/usr/local/bin/HandBrakeCLI"
 HANDBRAKE_PRESET = "Apple 720p30 Surround"
 HANDBRAKE_OUTPUT_EXTENSION = "m4v"
 TEST_MODE = false
+PID_FILE = File.join(File.dirname(__FILE__), 'current.pid')
 
 Process.setpriority(Process::PRIO_PROCESS, 0, 20)
 
@@ -27,6 +27,24 @@ LOG.warn "TEST MODE IS ON" if TEST_MODE
 
 LOG.debug "ARGV:\n\t#{ARGV.join("\n\t")}"
 LOG.debug "ENV:\n#{ENV.collect{|k,v| "\t#{k}: #{v}"}.join("\n")}"
+
+def lock
+  LOG.info "Waiting for lock on #{PID_FILE}"
+  File.open(PID_FILE, File::RDWR|File::CREAT, 0644) do |file|
+    begin
+      file.flock File::LOCK_EX
+      LOG.info "Lock established on #{PID_FILE}"
+      file.rewind
+      file.write "#{Process.pid}\n"
+      file.flush
+      file.truncate file.pos
+      yield
+    ensure
+      file.truncate 0
+      LOG.info "Releasing lock on #{PID_FILE}"
+    end
+  end
+end
 
 def subout(command, tag = false)
   LOG.info command
