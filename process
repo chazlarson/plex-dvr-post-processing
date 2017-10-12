@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+# Copy locally
+# Comskip
+# Replace original
+# Enqueue transcode job
+# exit
+# Transcode from local copy
+# Find comskipped file
+# Copy transcoded file alongside comskipped file
+# Delete comskipped file
+# Delete local copy
+# Notify Plex

@@ -10,17 +10,17 @@ local_copy do |local_path|
   local_path = transcoded_path
 
   LOG.info "Copying transcoded file to source directory"
-  output = File.join(input_dirname, File.basename(local_path))
+  output = File.join(input_dirname, File.basename(transcoded_path))
   LOG.info "Copying \"#{local_path}\" to \"#{output}\""
-  copy_command = "cp #{Shellwords::shellescape local_path} #{Shellwords::shellescape output}"
+  copy_command = "cp #{Shellwords::shellescape transcoded_path} #{Shellwords::shellescape output}"
   subout copy_command, 'COPY'
 
-  LOG.info "Moving the processed file over the original"
-  move_command = "mv #{Shellwords::shellescape output} #{Shellwords::shellescape input}"
+  LOG.info "Deleting the original"
+  delete_command = "rm #{Shellwords::shellescape input}"
   if TEST_MODE
-    LOG.info "Skipping the move command because of TEST_MODE. Would have been:\n#{move_command}"
+    LOG.info "Skipping the delete command because of TEST_MODE. Would have been:\n#{delete_command}"
   else
-    subout move_command, 'MOVE'
+    subout delete_command, 'DELETE'
   end
 end
 
