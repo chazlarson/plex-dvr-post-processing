@@ -6,7 +6,7 @@ require 'shellwords'
 PLEX_MEDIA_SCAN_PATH = "/Applications/Plex\ Media\ Server.app/Contents/MacOS/Plex\ Media\ Scanner"
 PLEX_COMSKIP_PATH = "/Users/john/development/PlexComskip/PlexComskip.py"
 HANDBRAKE_BIN = "/usr/local/bin/HandBrakeCLI"
-HANDBRAKE_PRESET = "Apple 720p30 Surround"
+HANDBRAKE_PRESET = "Very Fast 720p30"
 HANDBRAKE_OUTPUT_EXTENSION = "m4v"
 TEST_MODE = false
 PID_FILE = File.join(File.dirname(__FILE__), 'current.pid')
