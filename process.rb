@@ -48,16 +48,16 @@ LOG.info "Stripping Commercials"
 comskip_command = "#{PLEX_COMSKIP_PATH} #{Shellwords::shellescape input_tmp_path}"
 subout comskip_command, 'COMSKIP'
 
-LOG.info "Transcoding"
-transcoded_tmp_path = "#{input_tmp_path}.#{HANDBRAKE_PRESET}.#{HANDBRAKE_OUTPUT_EXTENSION}"
-transcode_command = "#{HANDBRAKE_BIN} --preset \"#{HANDBRAKE_PRESET}\" -i #{Shellwords::shellescape input_tmp_path} -o #{Shellwords::shellescape transcoded_tmp_path}"
-transcode_command += " --stop-at duration:60" if TEST_MODE
-subout transcode_command, 'TRANSCODE'
+#LOG.info "Transcoding"
+#transcoded_tmp_path = "#{input_tmp_path}.#{HANDBRAKE_PRESET}.#{HANDBRAKE_OUTPUT_EXTENSION}"
+#transcode_command = "#{HANDBRAKE_BIN} --preset \"#{HANDBRAKE_PRESET}\" -i #{Shellwords::shellescape input_tmp_path} -o #{Shellwords::shellescape transcoded_tmp_path}"
+#transcode_command += " --stop-at duration:60" if TEST_MODE
+#subout transcode_command, 'TRANSCODE'
 
 LOG.info "Copying processed file to source directory"
-output = File.join(input_dirname, File.basename(transcoded_tmp_path))
-LOG.info "Copying \"#{transcoded_tmp_path}\" to \"#{output}\""
-copy_command = "cp #{Shellwords::shellescape transcoded_tmp_path} #{Shellwords::shellescape output}"
+output = File.join(input_dirname, File.basename(input_tmp_path))
+LOG.info "Copying \"#{input_tmp_path}\" to \"#{output}\""
+copy_command = "cp #{Shellwords::shellescape input_tmp_path} #{Shellwords::shellescape output}"
 subout copy_command, 'COPY'
 
 LOG.info "Moving the processed file over the original"
