@@ -8,15 +8,6 @@ HANDBRAKE_BIN = "/usr/local/bin/HandBrakeCLI"
 HANDBRAKE_PRESET = "Apple 720p30 Surround"
 HANDBRAKE_OUTPUT_EXTENSION = "m4v"
 TEST_MODE = true
-LOG_ROOT = File.join(File.dirname(__FILE__), 'logs')
-FileUtils.mkdir_p LOG_ROOT
-LOG_PATH = File.join(LOG_ROOT, "#{input_basename}.log")
-LOG = Logger.new(LOG_PATH)
-
-LOG.warn "TEST MODE IS ON" if TEST_MODE
-
-LOG.debug "ARGV:\n\t#{ARGV.join("\n\t")}"
-LOG.debug "ENV:\n#{ENV.collect{|k,v| "\t#{k}: #{v}"}.join("\n")}"
 
 Process.setpriority(Process::PRIO_PROCESS, 0, 20)
 
@@ -32,6 +23,15 @@ def input_dirname
   File.dirname(input)
 end
 
+LOG_ROOT = File.join(File.dirname(__FILE__), 'logs')
+FileUtils.mkdir_p LOG_ROOT
+LOG_PATH = File.join(LOG_ROOT, "#{input_basename}.log")
+LOG = Logger.new(LOG_PATH)
+
+LOG.warn "TEST MODE IS ON" if TEST_MODE
+LOG.debug "ARGV:\n\t#{ARGV.join("\n\t")}"
+LOG.debug "ENV:\n#{ENV.collect{|k,v| "\t#{k}: #{v}"}.join("\n")}"
+
 def subout(command, tag = false)
   LOG.info command
   IO.popen("#{command} 2>&1").each do |line|
@@ -39,10 +39,10 @@ def subout(command, tag = false)
   end
 end
 
-def local_copy(input)
+def local_copy
   tmp_dir = Dir.mktmpdir
   LOG.info "Created Temporary Working Directory \"#{tmp_dir}\""
-  input_tmp_path = File.join(tmp_dir, input)
+  input_tmp_path = File.join(tmp_dir, input_basename)
   begin
     LOG.info "Copying \"#{input}\" to #{input_tmp_path}"
     copy_command = "cp #{Shellwords::shellescape input} #{Shellwords::shellescape input_tmp_path}"
