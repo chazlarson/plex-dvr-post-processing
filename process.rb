@@ -63,13 +63,14 @@ LOG.info "Copying \"#{input}\" to #{input_tmp_path}"
 copy_command = "cp #{Shellwords::shellescape input} #{Shellwords::shellescape input_tmp_path}"
 subout copy_command, 'COPY'
 
+transcoded_tmp_path = "#{input_tmp_path}.#{HANDBRAKE_PRESET}.#{HANDBRAKE_OUTPUT_EXTENSION}"
+
 lock do
   LOG.info "Stripping Commercials"
   comskip_command = "#{PLEX_COMSKIP_PATH} #{Shellwords::shellescape input_tmp_path}"
   subout comskip_command, 'COMSKIP'
   
   LOG.info "Transcoding"
-  transcoded_tmp_path = "#{input_tmp_path}.#{HANDBRAKE_PRESET}.#{HANDBRAKE_OUTPUT_EXTENSION}"
   transcode_command = "#{HANDBRAKE_BIN} --preset \"#{HANDBRAKE_PRESET}\" -i #{Shellwords::shellescape input_tmp_path} -o #{Shellwords::shellescape transcoded_tmp_path}"
   transcode_command += " --stop-at duration:60" if TEST_MODE
   subout transcode_command, 'TRANSCODE'
