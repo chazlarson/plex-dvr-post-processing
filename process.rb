@@ -76,9 +76,9 @@ lock do
 end
 
 LOG.info "Copying processed file to source directory"
-output = File.join(input_dirname, File.basename(input_tmp_path))
-LOG.info "Copying \"#{input_tmp_path}\" to \"#{output}\""
-copy_command = "cp #{Shellwords::shellescape input_tmp_path} #{Shellwords::shellescape output}"
+output = File.join(input_dirname, File.basename(transcoded_tmp_path))
+LOG.info "Copying \"#{transcoded_tmp_path}\" to \"#{output}\""
+copy_command = "cp #{Shellwords::shellescape transcoded_tmp_path} #{Shellwords::shellescape output}"
 subout copy_command, 'COPY'
 
 LOG.info "Moving the processed file over the original"
